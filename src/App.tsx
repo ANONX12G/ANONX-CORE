@@ -304,7 +304,7 @@ export default function App() {
           </button>
         </div>
         <div style={{ textAlign: "center", fontSize: 9, color: "#222", marginTop: 8, letterSpacing: "0.2em" }}>
-          𓂀 ANONX AI • POWERED BY CLAUDE • ENTER TO TRANSMIT 𓂀
+          𓂀 ANONX AI • POWERED BY ANONX INTELLIGENCE • ENTER TO TRANSMIT 𓂀
         </div>
       </div>
     </div>
