@@ -44,7 +44,7 @@ export default function App() {
     setLoading(true);
 
     try {
-      const apiKey = import.meta.env.VITE_GROQ_KEY;
+       const apiKey = "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";
       
       const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
         method: "POST",
