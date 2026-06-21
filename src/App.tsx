@@ -51,7 +51,7 @@ export default function App() {
         headers: {
           "Content-Type": "application/json",
           "Authorization": `Bearer ${OPENROUTER_KEY}`,
-          "HTTP-Referer": "https://x-core.vercel.app",
+          "HTTP-Referer": "https://anonx-core.vercel.app",
           "X-Title": "AnonX AI",
         },
         body: JSON.stringify({
