@@ -44,16 +44,16 @@ export default function App() {
     setLoading(true);
 
     try {
-       const apiKey = "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";
+       const apiKey = "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";
       
-      const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+      const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           "Authorization": `Bearer ${apiKey}`,
         },
         body: JSON.stringify({
-          model: "llama3-8b-8192",
+          model: "mistralai/mistral-7b-instruct:free",
           max_tokens: 1000,
           messages: [
             {
