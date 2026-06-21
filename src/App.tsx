@@ -9,6 +9,8 @@ const SUGGESTIONS = [
   "Help me with anything",
 ];
 
+const OPENROUTER_KEY = "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";
+
 export default function App() {
   const [messages, setMessages] = useState([
     {
@@ -44,17 +46,16 @@ export default function App() {
     setLoading(true);
 
     try {
-       const apiKey = "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";
-      
       const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "Authorization": `Bearer ${apiKey}`,
+          "Authorization": `Bearer ${OPENROUTER_KEY}`,
+          "HTTP-Referer": "https://anonx-core.vercel.app",
+          "X-Title": "AnonX AI",
         },
         body: JSON.stringify({
           model: "mistralai/mistral-7b-instruct:free",
-          max_tokens: 1000,
           messages: [
             {
               role: "system",
@@ -66,9 +67,11 @@ export default function App() {
       });
 
       const data = await response.json();
+      console.log("API Response:", data);
       const reply = data.choices?.[0]?.message?.content || "𓂀 The signal was lost in the void. Try again...";
       setMessages(prev => [...prev, { role: "assistant", content: reply }]);
     } catch (err) {
+      console.error("Error:", err);
       setMessages(prev => [...prev, { role: "assistant", content: "𓂀 Connection lost in the digital abyss. Check your network and try again..." }]);
     }
 
@@ -80,17 +83,7 @@ export default function App() {
   };
 
   return (
-    <div style={{
-      minHeight: "100vh",
-      background: "#000000",
-      fontFamily: "'Courier New', monospace",
-      color: "#c0c0c0",
-      display: "flex",
-      flexDirection: "column",
-      alignItems: "center",
-      position: "relative",
-      overflow: "hidden",
-    }}>
+    <div style={{ minHeight: "100vh", background: "#000000", fontFamily: "'Courier New', monospace", color: "#c0c0c0", display: "flex", flexDirection: "column", alignItems: "center", position: "relative", overflow: "hidden" }}>
       <style>{`
         @keyframes fadeUp { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
         @keyframes pulse { 0%,100%{opacity:0.3} 50%{opacity:1} }
@@ -107,13 +100,11 @@ export default function App() {
         ::-webkit-scrollbar-thumb { background: #4a0080; border-radius: 4px; }
       `}</style>
 
-      {/* Scanline */}
       <div style={{ position: "fixed", inset: 0, zIndex: 0, pointerEvents: "none", background: "repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.03) 2px, rgba(0,0,0,0.03) 4px)" }} />
       <div style={{ position: "fixed", top: -100, left: -100, width: 400, height: 400, background: "radial-gradient(circle, rgba(138,43,226,0.08) 0%, transparent 70%)", borderRadius: "50%", pointerEvents: "none", zIndex: 0 }} />
       <div style={{ position: "fixed", bottom: -100, right: -100, width: 400, height: 400, background: "radial-gradient(circle, rgba(75,0,130,0.08) 0%, transparent 70%)", borderRadius: "50%", pointerEvents: "none", zIndex: 0 }} />
       <div style={{ position: "fixed", left: 0, right: 0, height: 2, zIndex: 1, pointerEvents: "none", background: "linear-gradient(transparent, rgba(138,43,226,0.08), transparent)", animation: "scanline 8s linear infinite" }} />
 
-      {/* Header */}
       <div style={{ width: "100%", maxWidth: 680, padding: "20px 16px 16px", borderBottom: "1px solid rgba(138,43,226,0.2)", display: "flex", alignItems: "center", justifyContent: "space-between", position: "sticky", top: 0, zIndex: 100, background: "rgba(0,0,0,0.95)", backdropFilter: "blur(10px)" }}>
         <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
           <div style={{ width: 44, height: 44, background: "linear-gradient(135deg, #4a0080, #8a2be2)", borderRadius: 12, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 22, boxShadow: "0 0 20px rgba(138,43,226,0.5)", animation: "float 3s ease-in-out infinite" }}>𓂀</div>
@@ -125,22 +116,16 @@ export default function App() {
             </div>
           </div>
         </div>
-        <button onClick={() => setMessages([{ role: "assistant", content: "𓂀 I am AnonX AI... lurking in the shadows of the digital realm. Ask me anything — no question is too dark, too deep, or too strange. I exist to serve. 𓂀" }])} style={{ background: "transparent", border: "1px solid rgba(138,43,226,0.3)", borderRadius: 8, color: "#4a0080", fontSize: 11, padding: "6px 12px", cursor: "pointer", fontFamily: "'Courier New', monospace", letterSpacing: "0.1em" }}>
-          [ CLEAR ]
-        </button>
+        <button onClick={() => setMessages([{ role: "assistant", content: "𓂀 I am AnonX AI... lurking in the shadows of the digital realm. Ask me anything — no question is too dark, too deep, or too strange. I exist to serve. 𓂀" }])} style={{ background: "transparent", border: "1px solid rgba(138,43,226,0.3)", borderRadius: 8, color: "#4a0080", fontSize: 11, padding: "6px 12px", cursor: "pointer", fontFamily: "'Courier New', monospace", letterSpacing: "0.1em" }}>[ CLEAR ]</button>
       </div>
 
-      {/* Messages */}
       <div style={{ width: "100%", maxWidth: 680, flex: 1, padding: "20px 16px", display: "flex", flexDirection: "column", gap: 20, minHeight: "calc(100vh - 200px)", position: "relative", zIndex: 1 }}>
-
         {messages.length === 1 && (
           <div style={{ animation: "fadeUp 0.6s ease" }}>
             <div style={{ fontSize: 10, color: "#4a0080", letterSpacing: "0.2em", textTransform: "uppercase", marginBottom: 12, textAlign: "center" }}>— INITIATE QUERY —</div>
             <div style={{ display: "flex", flexWrap: "wrap", gap: 8, justifyContent: "center" }}>
               {SUGGESTIONS.map((s, i) => (
-                <button key={i} onClick={() => sendMessage(s)} style={{ padding: "8px 14px", background: "rgba(74,0,128,0.1)", border: "1px solid rgba(138,43,226,0.2)", borderRadius: 4, color: "#8a2be2", fontSize: 11, cursor: "pointer", fontFamily: "'Courier New', monospace", letterSpacing: "0.05em" }}>
-                  {s}
-                </button>
+                <button key={i} onClick={() => sendMessage(s)} style={{ padding: "8px 14px", background: "rgba(74,0,128,0.1)", border: "1px solid rgba(138,43,226,0.2)", borderRadius: 4, color: "#8a2be2", fontSize: 11, cursor: "pointer", fontFamily: "'Courier New', monospace", letterSpacing: "0.05em" }}>{s}</button>
               ))}
             </div>
           </div>
@@ -151,7 +136,7 @@ export default function App() {
             <div style={{ width: 36, height: 36, borderRadius: 8, flexShrink: 0, background: msg.role === "user" ? "rgba(255,255,255,0.05)" : "linear-gradient(135deg, #4a0080, #8a2be2)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 16, border: msg.role === "user" ? "1px solid rgba(255,255,255,0.08)" : "none", boxShadow: msg.role === "assistant" ? "0 0 12px rgba(138,43,226,0.4)" : "none" }}>
               {msg.role === "user" ? "?" : "𓂀"}
             </div>
-            <div style={{ maxWidth: "78%", padding: "14px 18px", borderRadius: msg.role === "user" ? "2px 12px 12px 12px" : "12px 2px 12px 12px", background: msg.role === "user" ? "rgba(255,255,255,0.03)" : "rgba(74,0,128,0.12)", border: msg.role === "user" ? "1px solid rgba(255,255,255,0.06)" : "1px solid rgba(138,43,226,0.2)", fontSize: 13, lineHeight: 1.75, color: msg.role === "user" ? "#a0a0a0" : "#d0c8e8", whiteSpace: "pre-wrap", boxShadow: msg.role === "assistant" ? "0 0 20px rgba(138,43,226,0.08)" : "none", fontFamily: msg.role === "assistant" ? "'Courier New', monospace" : "Georgia, serif" }}>
+            <div style={{ maxWidth: "78%", padding: "14px 18px", borderRadius: msg.role === "user" ? "2px 12px 12px 12px" : "12px 2px 12px 12px", background: msg.role === "user" ? "rgba(255,255,255,0.03)" : "rgba(74,0,128,0.12)", border: msg.role === "user" ? "1px solid rgba(255,255,255,0.06)" : "1px solid rgba(138,43,226,0.2)", fontSize: 13, lineHeight: 1.75, color: msg.role === "user" ? "#a0a0a0" : "#d0c8e8", whiteSpace: "pre-wrap", fontFamily: msg.role === "assistant" ? "'Courier New', monospace" : "Georgia, serif" }}>
               {msg.content}
             </div>
           </div>
@@ -168,13 +153,11 @@ export default function App() {
             </div>
           </div>
         )}
-
         <div ref={bottomRef} />
       </div>
 
-      {/* Input */}
       <div style={{ width: "100%", maxWidth: 680, padding: "12px 16px 24px", position: "sticky", bottom: 0, zIndex: 100, background: "rgba(0,0,0,0.95)", backdropFilter: "blur(10px)", borderTop: "1px solid rgba(138,43,226,0.15)" }}>
-        <div style={{ display: "flex", gap: 10, alignItems: "flex-end", background: "rgba(74,0,128,0.08)", border: "1px solid rgba(138,43,226,0.25)", borderRadius: 8, padding: "8px 8px 8px 16px", boxShadow: "0 0 20px rgba(138,43,226,0.05)" }}>
+        <div style={{ display: "flex", gap: 10, alignItems: "flex-end", background: "rgba(74,0,128,0.08)", border: "1px solid rgba(138,43,226,0.25)", borderRadius: 8, padding: "8px 8px 8px 16px" }}>
           <span style={{ color: "#4a0080", fontSize: 12, paddingBottom: 8, flexShrink: 0 }}>▶</span>
           <textarea
             ref={inputRef}
@@ -186,11 +169,7 @@ export default function App() {
             style={{ flex: 1, background: "none", border: "none", color: "#c0c0c0", fontSize: 13, fontFamily: "'Courier New', monospace", lineHeight: 1.6, maxHeight: 120, overflowY: "auto", padding: "6px 0" }}
             onInput={e => { e.target.style.height = "auto"; e.target.style.height = Math.min(e.target.scrollHeight, 120) + "px"; }}
           />
-          <button
-            onClick={() => sendMessage()}
-            disabled={!input.trim() || loading}
-            style={{ width: 40, height: 40, borderRadius: 6, border: "none", background: input.trim() && !loading ? "linear-gradient(135deg, #4a0080, #8a2be2)" : "rgba(255,255,255,0.03)", color: input.trim() && !loading ? "#fff" : "#333", fontSize: 16, cursor: input.trim() && !loading ? "pointer" : "not-allowed", display: "flex", alignItems: "center", justifyContent: "center", transition: "all 0.2s", flexShrink: 0, boxShadow: input.trim() && !loading ? "0 0 16px rgba(138,43,226,0.4)" : "none" }}
-          >
+          <button onClick={() => sendMessage()} disabled={!input.trim() || loading} style={{ width: 40, height: 40, borderRadius: 6, border: "none", background: input.trim() && !loading ? "linear-gradient(135deg, #4a0080, #8a2be2)" : "rgba(255,255,255,0.03)", color: input.trim() && !loading ? "#fff" : "#333", fontSize: 16, cursor: input.trim() && !loading ? "pointer" : "not-allowed", display: "flex", alignItems: "center", justifyContent: "center", transition: "all 0.2s", flexShrink: 0, boxShadow: input.trim() && !loading ? "0 0 16px rgba(138,43,226,0.4)" : "none" }}>
             {loading ? <div style={{ width: 14, height: 14, border: "2px solid #333", borderTopColor: "#8a2be2", borderRadius: "50%", animation: "spin 0.8s linear infinite" }} /> : "→"}
           </button>
         </div>
