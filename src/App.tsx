@@ -55,7 +55,7 @@ export default function App() {
           "X-Title": "AnonX AI",
         },
         body: JSON.stringify({
-          model: "mistralai/mistral-7b-instruct:free",
+          model: "meta-llama/llama-3-8b-instruct:free",
           messages: [
             {
               role: "system",
